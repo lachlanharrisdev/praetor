@@ -207,6 +207,12 @@ func copyDir(src, dst string) error {
 		if !d.Type().IsRegular() {
 			return nil
 		}
+		// check for existing files
+		if _, statErr := os.Stat(target); statErr == nil {
+			return nil
+		} else if !os.IsNotExist(statErr) {
+			return statErr
+		}
 		return copyFile(path, target)
 	})
 }
