@@ -180,7 +180,11 @@ func writeJSONFile(path string, v any, perm fs.FileMode) error {
 	if err := os.WriteFile(tmp, b, perm); err != nil {
 		return err
 	}
-	return os.Rename(tmp, path)
+	if err = os.Rename(tmp, path); err != nil {
+		_ = os.Remove(tmp) // cleanup temporary file
+		return err
+	}
+	return nil
 }
 
 // copyDir copies the contents of the src directory
