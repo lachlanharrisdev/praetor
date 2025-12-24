@@ -57,20 +57,5 @@ func Load() (Config, error) {
 		return Config{}, err
 	}
 
-	if cfg.EngagementRoot == "" {
-		def, err := Default()
-		if err != nil {
-			return Config{}, err
-		}
-		cfg.EngagementRoot = def.EngagementRoot
-	}
-	if cfg.TemplateDir == "" {
-		def, err := Default()
-		if err != nil {
-			return Config{}, err
-		}
-		cfg.TemplateDir = def.TemplateDir
-	}
-
 	return cfg, nil
 }

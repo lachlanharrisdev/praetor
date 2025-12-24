@@ -29,13 +29,7 @@ type Event struct {
 
 // utility function
 
-// WriteNote writes the note to its JSONL representation
-func (event *Event) WriteNote() error {
-	_, err := MarshalJSONL(event)
-	return err
-}
-
-// MarshalJSONL marshals the note into JSONL format
+// MarshalJSONL marshals the event into JSONL format
 func MarshalJSONL(event *Event) ([]byte, error) {
 	buff := bytes.Buffer{}
 	w := jsonl.NewWriter(&buff)
@@ -45,7 +39,7 @@ func MarshalJSONL(event *Event) ([]byte, error) {
 	return buff.Bytes(), nil
 }
 
-// AppendEvent appends the note to the given file path
+// AppendEvent appends the event to the given file path
 func AppendEvent(path string, event *Event) error {
 	if err := EnsureEventHash(path, event); err != nil {
 		return err
