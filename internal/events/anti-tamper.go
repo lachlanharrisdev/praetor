@@ -11,7 +11,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 )
 
@@ -134,60 +133,83 @@ func VerifyLog(path string) error {
 	}
 	defer f.Close()
 
-	br := bufio.NewReader(f)
+	scanner := bufio.NewScanner(f)
+	return verifyLogLines(scanner)
+}
+
+// verifyLogLines processes each line of a log and validates the hash chain.
+func verifyLogLines(scanner *bufio.Scanner) error {
 	var lastHash string
 	lineNumber := 0
 
-	for {
-		b, err := br.ReadBytes('\n')
-		if err != nil && !errors.Is(err, io.EOF) {
-			return err
-		}
-		if len(b) == 0 && errors.Is(err, io.EOF) {
-			break
-		}
+	for scanner.Scan() {
 		lineNumber++
-		line := bytes.TrimSpace(b)
-		if len(line) == 0 {
-			if errors.Is(err, io.EOF) {
-				break
-			}
+		line := scanner.Bytes()
+
+		// Skip empty lines
+		if len(bytes.TrimSpace(line)) == 0 {
 			continue
 		}
 
 		var event Event
-		if uerr := json.Unmarshal(line, &event); uerr != nil {
-			return fmt.Errorf("line %d: %w", lineNumber, uerr)
+		if err := json.Unmarshal(line, &event); err != nil {
+			return fmt.Errorf("line %d: %w", lineNumber, err)
 		}
 
-		if event.Hash == "" {
-			if lastHash != "" {
-				return fmt.Errorf("line %d: %w", lineNumber, errors.New("hash chain broken (missing hash)"))
-			}
-		} else {
-			if lastHash == "" && event.PrevHash != "" {
-				return fmt.Errorf("line %d: %w", lineNumber, errors.New("events log appears modified (unexpected prev_hash)"))
-			}
-			if lastHash != "" && event.PrevHash != lastHash {
-				return fmt.Errorf("line %d: %w", lineNumber, errors.New("events log appears modified (broken hash chain)"))
-			}
-			if verr := VerifyEvent(&event); verr != nil {
-				return fmt.Errorf("line %d: %w", lineNumber, verr)
-			}
+		if err := verifyEventChain(&event, lastHash, lineNumber); err != nil {
+			return err
+		}
+
+		// Update lastHash if this event has a hash
+		if event.Hash != "" {
 			lastHash = event.Hash
 		}
+	}
 
-		if errors.Is(err, io.EOF) {
-			break
+	return scanner.Err()
+}
+
+// verifyEventChain validates a single event against the chain state
+// it checks:
+// - if event has no hash but chain has started (missing hash)
+// - if event starts chain with unexpected prev_hash
+// - if event's prev_hash doesnt match last hash (broken chain)
+// - if event's hash itself is valid
+func verifyEventChain(event *Event, lastHash string, lineNumber int) error {
+	if event.Hash == "" {
+		if lastHash != "" {
+			return fmt.Errorf("line %d: hash chain broken (missing hash)", lineNumber)
+		}
+		return nil
+	}
+
+	if lastHash == "" {
+		// attempted to start a new chain
+		if event.PrevHash != "" {
+			return fmt.Errorf("line %d: events log appears modified (unexpected prev_hash)", lineNumber)
+		}
+	} else {
+		// attempted to continue existing chain
+		if event.PrevHash != lastHash {
+			return fmt.Errorf("line %d: events log appears modified (broken hash chain)", lineNumber)
 		}
 	}
+
+	if err := VerifyEvent(event); err != nil {
+		return fmt.Errorf("line %d: %w", lineNumber, err)
+	}
+
 	return nil
 }
 
+// readLastNonEmptyLines reads the last n non empty lines from a file.
+// uses an expanding window approach starting from a small buffer and doubling
+// until it has enough lines or reaches the file start
 func readLastNonEmptyLines(path string, n int) ([][]byte, error) {
 	if n <= 0 {
 		return nil, nil
 	}
+
 	f, err := os.Open(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -197,45 +219,77 @@ func readLastNonEmptyLines(path string, n int) ([][]byte, error) {
 	}
 	defer f.Close()
 
-	fi, err := f.Stat()
-	if err != nil {
+	size, err := getFileSize(f)
+	if err != nil || size == 0 {
 		return nil, err
 	}
-	size := fi.Size()
-	if size == 0 {
-		return nil, nil
-	}
 
+	return readLinesFromEnd(f, size, n)
+}
+
+func getFileSize(f *os.File) (int64, error) {
+	fi, err := f.Stat()
+	if err != nil {
+		return 0, err
+	}
+	return fi.Size(), nil
+}
+
+// readLinesFromEnd reads the last n non empty lines by expanding the read window
+// from the end of the file until enough lines are found or the file start is reached
+func readLinesFromEnd(f *os.File, size int64, n int) ([][]byte, error) {
 	const (
 		initialTail = int64(64 * 1024)
 		maxTail     = int64(1024 * 1024)
 	)
 
 	for tail := initialTail; ; tail *= 2 {
+		// Don't read past the start of file
 		if tail > size {
 			tail = size
 		}
+
 		start := size - tail
-		buf := make([]byte, tail)
-		if _, err := f.ReadAt(buf, start); err != nil {
+		lines, err := readAndParseLines(f, start, tail, n)
+		if err != nil {
 			return nil, err
 		}
-		trimmed := bytes.TrimSpace(buf)
-		if len(trimmed) == 0 {
-			return nil, nil
-		}
 
-		parts := bytes.Split(trimmed, []byte("\n"))
-		lines := make([][]byte, 0, n)
-		for i := len(parts) - 1; i >= 0 && len(lines) < n; i-- {
-			p := bytes.TrimSpace(parts[i])
-			if len(p) == 0 {
-				continue
-			}
-			lines = append(lines, p)
-		}
 		if len(lines) >= n || start == 0 || tail >= maxTail {
 			return lines, nil
 		}
 	}
+}
+
+// readAndParseLines reads bytes from the file and extracts non-empty lines
+// returns up to n lines from the buffer, in reverse order
+func readAndParseLines(f *os.File, start int64, tail int64, n int) ([][]byte, error) {
+	buf := make([]byte, tail)
+	if _, err := f.ReadAt(buf, start); err != nil {
+		return nil, err
+	}
+
+	trimmed := bytes.TrimSpace(buf)
+	if len(trimmed) == 0 {
+		return nil, nil
+	}
+
+	return extractNonEmptyLines(trimmed, n)
+}
+
+// extractNonEmptyLines splits the buffer by newlines and extracts up to n
+// non-empty lines in reverse order
+func extractNonEmptyLines(buf []byte, n int) ([][]byte, error) {
+	parts := bytes.Split(buf, []byte("\n"))
+	lines := make([][]byte, 0, n)
+
+	// Iterate from the end of parts backward to maintain reverse order
+	for i := len(parts) - 1; i >= 0 && len(lines) < n; i-- {
+		p := bytes.TrimSpace(parts[i])
+		if len(p) > 0 {
+			lines = append(lines, p)
+		}
+	}
+
+	return lines, nil
 }
