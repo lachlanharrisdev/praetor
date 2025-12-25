@@ -178,7 +178,11 @@ func (of *OutputFormatter) formatOutput(level OutputLevel, iconType IconType, me
 
 // clearLine sends ANSI escape sequence to clear the current line
 func clearLine() {
-	fmt.Print("\r\033[K")
+	w := io.Writer(os.Stdout)
+	if defaultFormatter != nil && defaultFormatter.writer != nil {
+		w = defaultFormatter.writer
+	}
+	fmt.Fprint(w, "\r\033[K")
 }
 
 // Log outputs a message with the specified level and icon
