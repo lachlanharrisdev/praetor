@@ -4,12 +4,12 @@ Copyright © 2025 Lance Security <support@lancesecurity.org>
 package cmd
 
 import (
-	"fmt"
 	"os"
 	"time"
 
 	"github.com/lachlanharrisdev/praetor/internal/engagement"
 	"github.com/lachlanharrisdev/praetor/internal/events"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 	"github.com/lachlanharrisdev/praetor/internal/utils"
 
 	"github.com/spf13/cobra"
@@ -33,20 +33,23 @@ var statusCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Printf("%s\n", utils.Primary(s.Metadata.Name))
+		output.LogPrimary(s.Metadata.Name)
 
 		started := s.Metadata.CreatedAt
 		if ts, err := time.Parse(time.RFC3339Nano, s.Metadata.CreatedAt); err == nil {
 			started = ts.Local().Format("2006-01-02 15:04")
 		}
-		fmt.Printf("%s %s\n", utils.Muted("Started:"), utils.Default(started))
-		fmt.Printf("%s %s\n", utils.Muted("Notes:"), utils.Primary(s.NoteCount))
+		output.Indent()
+		output.Println(utils.Muted("Started:"), utils.Default(started))
+		output.Println(utils.Muted("Notes:"), utils.Primary(s.NoteCount))
 
 		if s.LastEvent == nil {
-			fmt.Printf("%s %s\n", utils.Muted("Latest:"), utils.Muted("(none)"))
+			output.Println(utils.Muted("Latest:"), utils.Muted("(none)"))
+			output.Dedent()
 			return nil
 		}
-		fmt.Printf("%s %s\n", utils.Muted("Latest:\n"), events.ShowEventTerminal(*s.LastEvent))
+		output.Println(utils.Muted("Latest:"), events.ShowEventTerminal(*s.LastEvent))
+		output.Dedent()
 		return nil
 	},
 }
