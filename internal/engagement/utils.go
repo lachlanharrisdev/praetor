@@ -83,6 +83,10 @@ func CountEventsOfType(eventsPath string, eventType string) (int, error) {
 		if err != nil && !errors.Is(err, io.EOF) {
 			return 0, err
 		}
+		if errors.Is(err, io.EOF) && len(b) == 0 {
+			break
+		}
+
 		line := bytes.TrimSpace(b)
 		if len(line) == 0 {
 			if errors.Is(err, io.EOF) {
@@ -90,6 +94,7 @@ func CountEventsOfType(eventsPath string, eventType string) (int, error) {
 			}
 			continue
 		}
+
 		var e eventTypeOnly
 		if err := json.Unmarshal(line, &e); err != nil {
 			return 0, err
