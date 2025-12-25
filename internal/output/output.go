@@ -210,21 +210,19 @@ func (of *OutputFormatter) StartLoader(id string, message string) func(OutputLev
 	of.activeLoaders[id] = state
 	of.mu.Unlock()
 
-	// Start loader animation goroutine
+	// Start loader render goroutine
+	// The global ticker in startLoaderTicker() handles frameIndex updates
+	// This goroutine only renders the current frame
 	go func() {
-		ticker := time.NewTicker(100 * time.Millisecond)
-		defer ticker.Stop()
-
 		for {
 			select {
-			case <-ticker.C:
+			case <-of.loaderTicker.C:
 				of.mu.Lock()
 				currentState, exists := of.activeLoaders[id]
 				if !exists {
 					of.mu.Unlock()
 					return
 				}
-				currentState.frameIndex = (currentState.frameIndex + 1) % len(spinnerFrames)
 				frameIndex := currentState.frameIndex
 				indentLevel := of.indentLevel
 				of.mu.Unlock()
