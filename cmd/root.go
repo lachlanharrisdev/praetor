@@ -6,8 +6,8 @@ package cmd
 import (
 	"os"
 
-	"github.com/lachlanharrisdev/praetor/internal/config"
-	"github.com/lachlanharrisdev/praetor/internal/utils"
+	"github.com/lance-security/praetor/internal/config"
+	"github.com/lance-security/praetor/internal/utils"
 	"github.com/spf13/cobra"
 )
 

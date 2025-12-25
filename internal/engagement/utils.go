@@ -13,7 +13,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/lachlanharrisdev/praetor/internal/events"
+	"github.com/lance-security/praetor/internal/events"
 )
 
 type Status struct {

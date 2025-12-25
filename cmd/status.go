@@ -7,10 +7,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/lachlanharrisdev/praetor/internal/engagement"
-	"github.com/lachlanharrisdev/praetor/internal/events"
-	"github.com/lachlanharrisdev/praetor/internal/output"
-	"github.com/lachlanharrisdev/praetor/internal/utils"
+	"github.com/lance-security/praetor/internal/engagement"
+	"github.com/lance-security/praetor/internal/events"
+	"github.com/lance-security/praetor/internal/output"
+	"github.com/lance-security/praetor/internal/utils"
 
 	"github.com/spf13/cobra"
 )

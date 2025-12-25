@@ -6,7 +6,7 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/lachlanharrisdev/praetor/internal/bastions"
+	"github.com/lance-security/praetor/internal/bastions"
 )
 
 // runCmd represents the run command

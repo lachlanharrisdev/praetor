@@ -1,4 +1,4 @@
-module github.com/lachlanharrisdev/praetor
+module github.com/lance-security/praetor
 
 go 1.24.2
 
