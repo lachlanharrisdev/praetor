@@ -4,7 +4,6 @@ project_name: praetor
 version: 2
 
 metadata:
-  # Set the modified timestamp on the metadata files.
   mod_timestamp: "{{ .CommitTimestamp }}"
 
 before:
@@ -30,51 +29,27 @@ builds:
       - -X github.com/lance-security/praetor/internal/version.Commit={{ .Commit }}
       - -X github.com/lance-security/praetor/internal/version.Date={{ .Date }}
 
-# verifiable builds
 gomod:
-  # Proxy a module from proxy.golang.org, making the builds verifiable.
-  # This will only be effective if running against a tag. Snapshots will ignore
-  # this setting.
-  proxy: true
-
-  # If proxy is true, use these environment variables when running `go mod`
-  # commands (namely, `go mod tidy`).
+  proxy: false
   env:
-    - GOPROXY=https://proxy.golang.org,direct
-    - GOSUMDB=sum.golang.org
+    - GOPROXY=direct
+    - GOSUMDB=off
+    - GOPRIVATE=github.com/lance-security/*
+    - GONOSUMDB=github.com/lance-security/*
 
-  # Sets the `-mod` flag value.
-  mod: mod
-
-# UPX compression
 upx:
-  - # Whether to enable it or not.
-    enabled: true
-
-    # Filter by build ID.
+  - enabled: true
     ids: [praetor]
-
-    # Filter by GOOS.
     goos: [linux]
-
-    # Filter by GOARCH.
     goarch: [amd64, arm64]
-
-    # Compress argument.
-    # Valid options are from '1' (faster) to '9' (better), and 'best'.
     compress: best
-
-    # Whether to try LZMA (slower).
     lzma: true
-
-    # Whether to try all methods and filters (slow).
     brute: true
 
 archives:
   - id: default
     format: tar.gz
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-    # Set per-OS format overrides
     format_overrides:
       - goos: windows
         format: zip
