@@ -5,9 +5,9 @@ name: release
 
 on:
   push:
-    # run only against tags
+    # run only against version tags (e.g., v1.2.3)
     tags:
-      - "*"
+      - "v*"
 
 permissions:
   contents: write
