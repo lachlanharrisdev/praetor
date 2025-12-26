@@ -16,11 +16,10 @@ builds:
     binary: pt
     goos:
       - linux
-      - darwin
-      - windows
     goarch:
       - amd64
       - arm64
+
     env:
       - CGO_ENABLED=0
     ldflags:
@@ -60,7 +59,16 @@ checksum:
 
 changelog:
   use: github
-  sort: asc
+  abbrev: 7
+  groups:
+    - title: "Features"
+      regexp: "^[Ff]eat"
+      order: 0
+    - title: "Bug Fixes"
+      regexp: "^[Ff]ix"
+      order: 1
+    - title: "Miscellaneous"
+      order: 999
   filters:
     exclude:
       - "^docs:"
@@ -70,11 +78,74 @@ release:
   github:
     owner: lance-security
     name: praetor
-  # keep draft until upload completes; goreleaser will publish after uploads (unless skip_publish is set)
-  draft: true
-  use_existing_draft: true
-  replace_existing_draft: true
-  replace_existing_artifacts: true
+  # If set to true, will not auto-publish the release.
+  # Note: all GitHub releases start as drafts while artifacts are uploaded.
+  # Available only for GitHub and Gitea.
+  draft: false
+
+  # Whether to remove existing draft releases with the same name before creating
+  # a new one.
+  #
+  # Only effective if `draft` is set to true.
+  # Available only for GitHub.
+  replace_existing_draft: false
+
+  # Whether to use an existing draft release as the target release.
+  #
+  # Available only for GitHub.
+  # Since: v2.5.
+  use_existing_draft: false
+
+  # Whether to remove an artifact that already exists.
+  #
+  # Available only for GitHub.
+  # This might be a bit expensive (rate-limiting speaking), so it is only done
+  # when the upload of an artifact fails with a 422 (which means it already
+  # exists in the release).
+  # We then grab the list of artifacts from the release, and delete the file
+  # that matches the one we're trying to upload.
+  # GoReleaser will then retry its upload.
+  replace_existing_artifacts: false
+
   name_template: "{{ .Tag }}"
+  header: |
+    ## Praetor {{ .Version }}
+
+    **Release Date:** {{ .Date }}
+    **Commit:** {{ .ShortCommit }}
+
   footer: |
-    Thanks for using Praetor! Report issues at https://github.com/lance-security/praetor/issues
+    ---
+
+    ### Installation
+
+    Download the binary for your platform from the assets below, optionally verify the checksum, and place it in your `$PATH`.
+
+    **macOS/Linux:**
+    ```bash
+    # Extract and install
+    tar xzf praetor_{{ .Version }}_<os>_<arch>.tar.gz
+    sudo mv pt /usr/local/bin/
+    ```
+
+    **Windows:**
+
+    *NOTICE: Windows is not officially supported, we generate binaries and ensure they compile to windows targets, but there is no testing done on Windows systems.*
+
+    Extract the zip folder in explorer and move `pt.exe` to a directory in your `PATH`.
+
+    **Verify Checksum:**
+    ```bash
+    sha256sum -c checksums.txt
+    ```
+
+    ### Resources
+
+    - [Documentation](https://github.com/{{ .Env.GITHUB_REPOSITORY }})
+    - [Report Issues](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/issues)
+    - [Discussions](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/discussions)
+    - [Lance Security](https://www.lancesecurity.org)
+
+    ---
+
+    **Built with Go {{ .Env.GO_VERSION }}** | **Git State:** {{ .GitTreeState }}
