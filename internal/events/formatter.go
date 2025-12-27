@@ -44,7 +44,7 @@ func ShowEventTerminal(e Event) string {
 	}
 
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("[%s] ", utils.Mutedf("%s", timestamp)))
+	b.WriteString(utils.Mutedf("[%s] ", timestamp))
 	b.WriteString(fmt.Sprintf("%s ", typeStyled))
 	//b.WriteString(utils.Mutedf("by %s in %s | ", e.User, e.Cwd))
 	b.WriteString(utils.Mutedf("by "))
