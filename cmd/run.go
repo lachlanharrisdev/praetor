@@ -13,24 +13,21 @@ import (
 var runCmd = &cobra.Command{
 	Use:   "run [--sandbox -s] <command> [args...]",
 	Short: "Runs any CLI command, optionally in an isolated Bastion",
-	Long: `Run allows you to run any CLI command within an isolated "Bastion", offering
-	a container-like, isolated environment for executing commands securely during
-	penetration testing engagements.`,
+	Long: `Run allows you to run any CLI command, optionally in an isolated "Bastion".
+	Bastions offer a container-like, isolated environment for executing commands
+	securely during penetration testing engagements.`,
 	Args:               cobra.MinimumNArgs(1),
 	SilenceUsage:       true,
 	DisableFlagParsing: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Manually parse sandbox flag from args (slightly messy but it'll do)
 		sandbox := false
-		toolArgs := []string{}
-
-		for i := range len(args) {
-			arg := args[i]
-			if arg == "-s" || arg == "--sandbox" {
-				sandbox = true
-			} else {
-				toolArgs = append(toolArgs, arg)
-			}
+		var toolArgs []string
+		if len(args) > 0 && (args[0] == "-s" || args[0] == "--sandbox") {
+			sandbox = true
+			toolArgs = args[1:]
+		} else {
+			toolArgs = args
 		}
 
 		if len(toolArgs) == 0 {
