@@ -52,7 +52,14 @@ func capture(args []string) error {
 
 	user := events.GetUser()
 
-	rawData, sourceLabel, err := captureFromInput(args)
+	var rawData, sourceLabel string
+
+	if len(args) > 0 {
+		rawData, sourceLabel, err = captureFromFile(args)
+	} else {
+		rawData, sourceLabel, err = captureFromStdin()
+	}
+
 	if err != nil {
 		return err
 	}
@@ -89,22 +96,6 @@ func captureFromFile(args []string) (rawData string, sourceLabel string, err err
 		return "", "", fmt.Errorf("failed to read file: %w", err)
 	}
 	return data, filepath.Base(filename), nil
-}
-
-// captureFromInput determines the correct method of capturing data
-func captureFromInput(args []string) (rawData string, sourceLabel string, err error) {
-	if len(args) > 0 {
-		rawData, sourceLabel, err = captureFromFile(args)
-		if err != nil {
-			return "", "", err
-		}
-	} else {
-		rawData, sourceLabel, err = captureFromStdin()
-		if err != nil {
-			return "", "", err
-		}
-	}
-	return rawData, sourceLabel, nil
 }
 
 // captureFromStdin
