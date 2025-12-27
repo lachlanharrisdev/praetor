@@ -12,8 +12,11 @@ import (
 )
 
 // RunCmd will run the provided command from the arguments
-// will soon have support for a "modules" system designed to read specific CLI tools (e.g nmap) and append a "result" event to engagement log
+// TODO: add support for a "modules" system designed to read specific CLI tools (e.g nmap) and append a "result" event to engagement log
 func RunCmd(args []string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("no command provided to run")
+	}
 	output.LogTask("Starting command execution")
 	stopLoader := output.StartLoader("cmd-execution", fmt.Sprintf("Executing: %s", args[0]))
 
