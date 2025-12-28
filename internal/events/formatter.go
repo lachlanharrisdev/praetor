@@ -57,10 +57,10 @@ func ShowEventTerminal(e Event) string {
 }
 
 // ShowEventsTerminal formats multiple events for terminal output
-func ShowEventsTerminal(events []Event) string {
+func ShowEventsTerminal(events []*Event) string {
 	var b strings.Builder
 	for _, e := range events {
-		b.WriteString(ShowEventTerminal(e))
+		b.WriteString(ShowEventTerminal(*e))
 		b.WriteString("\n")
 	}
 	return b.String()
