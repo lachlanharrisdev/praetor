@@ -91,3 +91,33 @@ func GetEventById(path string, id int) (*Event, error) {
 	}
 	return nil, nil
 }
+
+// GetLastNEvents retrieves the last N events from the events log file
+func GetLastNEvents(path string, n int) ([]*Event, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	decoder := json.NewDecoder(f)
+	var events []*Event
+
+	for {
+		var event Event
+		if err := decoder.Decode(&event); err != nil {
+			if err.Error() == "EOF" {
+				break
+			}
+			return nil, err
+		}
+		eventCopy := new(Event)
+		*eventCopy = event
+		events = append(events, eventCopy)
+	}
+
+	if len(events) < n {
+		return events, nil
+	}
+	return events[len(events)-n:], nil
+}

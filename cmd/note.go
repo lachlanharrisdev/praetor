@@ -49,7 +49,8 @@ var noteCmd = &cobra.Command{
 		output.LogSuccess("Successfully added note")
 		return engagement.TouchLastUsed(engDir)
 	},
-	Args: cobra.MinimumNArgs(1),
+	Args:    cobra.MinimumNArgs(1),
+	Aliases: []string{"log"},
 }
 
 func init() {
