@@ -26,18 +26,19 @@ builds:
       - -s -w
       - -X github.com/lance-security/praetor/internal/version.Version={{ .Version }}
       - -X github.com/lance-security/praetor/internal/version.Commit={{ .Commit }}
-      - -X github.com/lance-security/praetor/internal/version.Date={{ .Date }}
+      - -X github.com/lance-security/praetor/internal/version.Date={{ .CommitDate }}
 
 gomod:
   proxy: true
   env:
-    - GOPROXY=direct
-    - GOSUMDB=off
+    - GOPROXY=https://proxy.golang.org,direct
+    - GOSUMDB=sum.golang.org
     - GOPRIVATE=github.com/lance-security/*
     - GONOSUMDB=github.com/lance-security/*
 
 upx:
-  - enabled: true
+  # disabled as it sometimes triggers AV; will provide both binaries if there's demand
+  - enabled: false
     ids: [praetor]
     goos: [linux]
     goarch: [amd64, arm64]
@@ -62,50 +63,31 @@ changelog:
   abbrev: 7
   groups:
     - title: "Features"
-      regexp: "^[Ff]eat"
+      regexp: '^feat(\(.+\))?:'
       order: 0
     - title: "Bug Fixes"
-      regexp: "^[Ff]ix"
+      regexp: '^fix(\(.+\))?:'
       order: 1
-    - title: "Miscellaneous"
+    - title: "Uncategorized"
       order: 999
   filters:
     exclude:
-      - "^docs:"
-      - "^test:"
-      - "^chore:"
+      - '^docs(\(.+\))?:'
+      - '^test(\(.+\))?:'
+      - '^refactor(\(.+\))?:'
+      - '^chore(\(.+\))?:'
+      - '^refc(\(.+\))?:'
+
+sboms:
+  - artifacts: archive
 
 release:
   github:
     owner: lance-security
     name: praetor
-  # If set to true, will not auto-publish the release.
-  # Note: all GitHub releases start as drafts while artifacts are uploaded.
-  # Available only for GitHub and Gitea.
   draft: false
-
-  # Whether to remove existing draft releases with the same name before creating
-  # a new one.
-  #
-  # Only effective if `draft` is set to true.
-  # Available only for GitHub.
   replace_existing_draft: false
-
-  # Whether to use an existing draft release as the target release.
-  #
-  # Available only for GitHub.
-  # Since: v2.5.
   use_existing_draft: false
-
-  # Whether to remove an artifact that already exists.
-  #
-  # Available only for GitHub.
-  # This might be a bit expensive (rate-limiting speaking), so it is only done
-  # when the upload of an artifact fails with a 422 (which means it already
-  # exists in the release).
-  # We then grab the list of artifacts from the release, and delete the file
-  # that matches the one we're trying to upload.
-  # GoReleaser will then retry its upload.
   replace_existing_artifacts: false
 
   name_template: "{{ .Tag }}"
@@ -123,10 +105,17 @@ release:
 
     ## Installation
 
-    Download the binary for your platform from the assets below, optionally verify the checksum, and place the binary in your `$PATH`.
+    Download the binary for your platform from the assets below, extract, optionally verify the checksum, and place the binary in your `$PATH`.
 
+    **Linux (x86_64/amd64)**
     ```bash
-    tar xzf praetor_{{ .Version }}_<os>_<arch>.tar.gz
+    tar xzf praetor_{{ .Version }}_linux_amd64.tar.gz
+    sudo mv pt /usr/local/bin/
+    ```
+
+    **Linux (arm64)**
+    ```bash
+    tar xzf praetor_{{ .Version }}_linux_arm64.tar.gz
     sudo mv pt /usr/local/bin/
     ```
 
@@ -139,6 +128,7 @@ release:
 
     ### Resources
 
-    - [Documentation](https://github.com/{{ .Env.GITHUB_REPOSITORY }})
+    - [Documentation](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/wiki)
     - [Report Issues](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/issues)
     - [Discussions](https://github.com/{{ .Env.GITHUB_REPOSITORY }}/discussions)
+    - [Roadmap](https://github.com/orgs/Lance-Security/projects/1)
