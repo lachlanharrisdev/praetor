@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lance-security/praetor/internal/version"
+	"github.com/lachlanharrisdev/praetor/internal/version"
 )
 
 type Metadata struct {

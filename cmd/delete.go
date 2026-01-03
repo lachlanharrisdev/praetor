@@ -11,31 +11,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/lance-security/praetor/internal/engagement"
-	"github.com/lance-security/praetor/internal/events"
-	"github.com/lance-security/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/engagement"
+	"github.com/lachlanharrisdev/praetor/internal/events"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 )
-
-/*
-type Event struct {
-	Id        int      `json:"id"`             // auto-incrementing ID
-	Type      string   `json:"type"`           // "note" | "command" | "result"
-	Timestamp string   `json:"timestamp"`      // RFC3339Nano format
-	SessionID string   `json:"session_id"`     // Engagement session ID
-	Cwd       string   `json:"cwd"`            // Current working directory
-	User      string   `json:"user"`           // user who performed the action
-	Content   string   `json:"content"`        // Main content of the event
-	Raw       string   `json:"raw,omitempty"`  // Optional raw data (e.g command output)
-	Tags      []string `json:"tags,omitempty"` // optional tags associated with the event (not implemented)
-
-	// tamper protection
-	Hash     string `json:"hash,omitempty"`      // Optional hash for tamper protection
-	PrevHash string `json:"prev_hash,omitempty"` // Optional previous hash for tamper protection
-
-	// modification / deletion
-	RefId int `json:"ref_id,omitempty"` // Optional reference to another event ID
-}
-*/
 
 // deleteCmd represents the delete command
 var deleteCmd = &cobra.Command{

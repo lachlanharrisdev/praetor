@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/lance-security/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 )
 
 // RunCmd will run the provided command from the arguments
