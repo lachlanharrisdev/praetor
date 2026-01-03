@@ -8,7 +8,7 @@ Due to the nature of the tool, we only actively support the latest version. You 
 
 ## Reporting a Vulnerability
 
-We use GitHub's built-in private vulnerability reporting system for reporting any security flaws, which can be found [here](https://github.com/Lance-Security/Praetor/security/advisories/new). Please fill in all the fields to the best of your ability, however this is not a requirement for your vulnerability to be triaged.
+We use GitHub's built-in private vulnerability reporting system for reporting any security flaws, which can be found [here](https://github.com/lachlanharrisdev/praetor/security/advisories/new). Please fill in all the fields to the best of your ability, however this is not a requirement for your vulnerability to be triaged.
 
 While the system should provide a simple-to-follow template for reporting, we ask that you try to provide us with as much of the following information as possible:
 
@@ -22,4 +22,4 @@ While the system should provide a simple-to-follow template for reporting, we as
 
 **Please do not report any security vulnerabilities in public spaces, including but not limited to Github Discussions, Issues, Pull Requests, or any social media platforms**
 
-> [Report a vulnerability](https://github.com/Lance-Security/Praetor/security/advisories/new)
+> [Report a vulnerability](https://github.com/lachlanharrisdev/praetor/security/advisories/new)

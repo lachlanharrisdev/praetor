@@ -8,8 +8,8 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/lance-security/praetor/internal/engagement"
-	"github.com/lance-security/praetor/internal/events"
+	"github.com/lachlanharrisdev/praetor/internal/engagement"
+	"github.com/lachlanharrisdev/praetor/internal/events"
 	"github.com/spf13/cobra"
 )
 

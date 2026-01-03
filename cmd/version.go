@@ -4,10 +4,10 @@ Copyright © 2025 Lance Security <support@lancesecurity.org>
 package cmd
 
 import (
-	"github.com/lance-security/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 	"github.com/spf13/cobra"
 
-	"github.com/lance-security/praetor/internal/version"
+	"github.com/lachlanharrisdev/praetor/internal/version"
 )
 
 // versionCmd represents the version command

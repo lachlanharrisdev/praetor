@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lance-security/praetor/internal/utils"
+	"github.com/lachlanharrisdev/praetor/internal/utils"
 )
 
 type IconType int

@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lance-security/praetor/internal/utils"
+	"github.com/lachlanharrisdev/praetor/internal/utils"
 )
 
 // ShowEventTerminal formats a single event for terminal output

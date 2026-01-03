@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/lance-security/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 )
 
 // declaring these as variables to allow mocking in tests in the future

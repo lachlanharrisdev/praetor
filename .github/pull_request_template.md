@@ -24,7 +24,7 @@ Not provided.
 > 
 > *By creating this pull request and ticking the below box, you confirm that you comply with the following requirements:*
 > 
-> - *I have read and acknlowedged the repository's [Code of Conduct](https://github.com/Lance-Security/Praetor/blob/main/.github/CODE_OF_CONDUCT.md)*
+> - *I have read and acknlowedged the repository's [Code of Conduct](https://github.com/lachlanharrisdev/praetor/blob/main/.github/CODE_OF_CONDUCT.md)*
 > - *I have correctly followed the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification*
 > - *The project builds on my machine (`make build`) and all test cases pass (`make test`)*
 > - *Where applicable, I have updated relevant documentation*

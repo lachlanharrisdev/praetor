@@ -24,9 +24,9 @@ builds:
       - CGO_ENABLED=0
     ldflags:
       - -s -w
-      - -X github.com/lance-security/praetor/internal/version.Version={{ .Version }}
-      - -X github.com/lance-security/praetor/internal/version.Commit={{ .Commit }}
-      - -X github.com/lance-security/praetor/internal/version.Date={{ .CommitDate }}
+      - -X github.com/lachlanharrisdev/praetor/internal/version.Version={{ .Version }}
+      - -X github.com/lachlanharrisdev/praetor/internal/version.Commit={{ .Commit }}
+      - -X github.com/lachlanharrisdev/praetor/internal/version.Date={{ .CommitDate }}
 
 gomod:
   proxy: true

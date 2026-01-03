@@ -9,9 +9,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/lance-security/praetor/internal/config"
-	"github.com/lance-security/praetor/internal/engagement"
-	"github.com/lance-security/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/config"
+	"github.com/lachlanharrisdev/praetor/internal/engagement"
+	"github.com/lachlanharrisdev/praetor/internal/output"
 )
 
 // startCmd represents the start command
