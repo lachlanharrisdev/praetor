@@ -68,6 +68,7 @@ func deleteEvent(args []string) error {
 		User:      user,
 		Content:   fmt.Sprintf("Delete event ID %d", eventId),
 		RefId:     eventId,
+		Tags:      tags,
 	}
 
 	// append the delete event to the log

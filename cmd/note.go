@@ -43,6 +43,11 @@ var noteCmd = &cobra.Command{
 			filepath.Clean(cwd),
 			user,
 		)
+
+		if len(tags) > 0 {
+			n.Tags = append(n.Tags, tags...)
+		}
+		
 		if err := events.AppendEvent(engagement.EventsPath(engDir), n); err != nil {
 			return err
 		}
