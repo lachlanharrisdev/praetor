@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var tags []string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "pt",
@@ -47,9 +49,10 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.praetor.yaml)")
+	// Repeatable, works on all subcommands, supports both --tag and -t.
+	rootCmd.PersistentFlags().StringArrayVarP(&tags, "tag", "t", nil, "add an optional tag to the created event, if applicable (repeatable)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

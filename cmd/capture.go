@@ -80,6 +80,10 @@ func capture(args []string) error {
 		nil,
 	)
 
+	if len(tags) > 0 {
+		event.Tags = append(event.Tags, tags...)
+	}
+
 	if err := events.AppendEvent(engagement.EventsPath(engDir), event); err != nil {
 		return fmt.Errorf("failed to append event: %w", err)
 	}
