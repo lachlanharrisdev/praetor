@@ -189,19 +189,17 @@ func writeJSONFile(path string, v any, perm fs.FileMode) error {
 // to the dst directory, excluding any .praetor directories
 func copyDir(src, dst string) error {
 	return filepath.WalkDir(src, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
 		rel, err := filepath.Rel(src, path)
 		if err != nil {
 			return err
 		}
-		if rel == "." {
+		if rel == "." || rel == ".praeator" {
 			return nil
 		}
-		if rel == ".praetor" || strings.HasPrefix(rel, ".praetor"+string(filepath.Separator)) {
+		if strings.HasPrefix(rel, ".praetor"+string(filepath.Separator)) {
 			return nil
 		}
+
 		target := filepath.Join(dst, rel)
 		if d.IsDir() {
 			return os.MkdirAll(target, 0o755)
@@ -209,6 +207,7 @@ func copyDir(src, dst string) error {
 		if !d.Type().IsRegular() {
 			return nil
 		}
+
 		// check for existing files
 		if _, statErr := os.Stat(target); statErr == nil {
 			return nil
