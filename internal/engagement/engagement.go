@@ -196,10 +196,7 @@ func copyDir(src, dst string) error {
 		if err != nil {
 			return err
 		}
-		if rel == "." {
-			return nil
-		}
-		if rel == ".praetor" || strings.HasPrefix(rel, ".praetor"+string(filepath.Separator)) {
+		if rel == "." || strings.HasPrefix(rel, ".praetor") {
 			return nil
 		}
 		target := filepath.Join(dst, rel)

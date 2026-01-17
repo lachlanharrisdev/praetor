@@ -16,7 +16,7 @@ run:
 	$(GO) run ./cmd/praetor
 
 test:
-	$(GO) test $(PKG)
+	$(GO) test -v $(PKG)
 
 tidy:
 	$(GO) mod tidy
