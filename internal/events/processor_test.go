@@ -14,9 +14,18 @@ func TestPrepareEvents(t *testing.T) {
 	defer os.Remove(tmpfile.Name())
 	tmpfile.Close()
 
-	AppendEvent(tmpfile.Name(), NewNote("Original", "session", "/home", "user"))
-	AppendEvent(tmpfile.Name(), NewNote("Keep", "session", "/home", "user"))
-	AppendEvent(tmpfile.Name(), NewNote("Delete", "session", "/home", "user"))
+	err = AppendEvent(tmpfile.Name(), NewNote("Original", "session", "/home", "user"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AppendEvent(tmpfile.Name(), NewNote("Keep", "session", "/home", "user"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	err = AppendEvent(tmpfile.Name(), NewNote("Delete", "session", "/home", "user"))
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	modEvent := &Event{
 		Type:      "modify",
