@@ -3,7 +3,9 @@
 {
 	"name": "Go",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/go:2-1.24-trixie",
+	"image": "mcr.microsoft.com/devcontainers/go:2-1.24.11-trixie",
+
+	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/guiyomh/features/golangci-lint:0": {
 			"version": "latest"
@@ -11,14 +13,13 @@
 		"ghcr.io/jungaretti/features/make:1": {}
 	},
 
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "go mod download",
+
+	"postStartCommand": "git config commit.gpgsign false",
 
 	// Configure tool-specific properties.
 	"customizations": {
