@@ -102,9 +102,7 @@ func renderMessagesTerminal(messages []Message, opts Options) (string, error) {
 			b.WriteString(utils.Mutedf("[%s] ", formatTime(ts)))
 		}
 
-		if line != "" {
-			b.WriteString(styleByLevel(m.Level, line))
-		}
+		b.WriteString(styleByLevel(m.Level, line))
 
 		if len(m.Fields) > 0 {
 			b.WriteString(utils.Muted(" "))
