@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/lachlanharrisdev/praetor/internal/config"
-	"github.com/lachlanharrisdev/praetor/internal/output"
+	"github.com/lachlanharrisdev/praetor/internal/formats"
 	"github.com/lachlanharrisdev/praetor/internal/utils"
 	"github.com/spf13/cobra"
 )
@@ -22,12 +22,37 @@ var rootCmd = &cobra.Command{
 in penetration testing engagements, as well as offering a minimal suite of tools
 to isolate, secure and manage the engagement environment.`,
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		cfg, err := config.Load()
+		rawFormat, err := cmd.Flags().GetString("format")
 		if err != nil {
-			output.LogErrorf("Failed to load configuration: %v", err)
 			return err
 		}
-		utils.ConfigureTerminal(cfg.UseColour, cfg.UseBold)
+		format := formats.ParseFormat(rawFormat)
+
+		// If JSON, kill colour immediately to prevent ANSI in structured output.
+		if format == formats.FormatJSON {
+			utils.ConfigureTerminal(false, false)
+		} else {
+			utils.ConfigureTerminal(true, true) // temporary until config is loaded
+		}
+
+		formats.SetDefault(formats.NewEmitter(formats.Options{
+			Format:       format,
+			Writer:       os.Stdout,
+			UseTimestamp: false,
+		}))
+
+		cfg, err := config.Load()
+		if err != nil {
+			formats.Errorf("Failed to load configuration: %v", err)
+			return err
+		}
+
+		if format == formats.FormatTerminal {
+			utils.ConfigureTerminal(cfg.UseColour, cfg.UseBold)
+		} else {
+			utils.ConfigureTerminal(false, false)
+		}
+
 		return nil
 	},
 	// Uncomment the following line if your bare application
@@ -51,6 +76,9 @@ func init() {
 
 	// Repeatable, works on all subcommands, supports both --tag and -t.
 	rootCmd.PersistentFlags().StringArrayVarP(&tags, "tag", "t", nil, "add an optional tag to the created event, if applicable (repeatable)")
+
+	// Output format
+	rootCmd.PersistentFlags().StringP("format", "f", "terminal", "set the output format (e.g., terminal, json)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
