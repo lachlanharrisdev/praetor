@@ -120,7 +120,7 @@ func renderMessageEventLine(ev events.Event) string {
 	var b strings.Builder
 	b.WriteString(utils.Mutedf("[%s] ", timestamp))
 	b.WriteString(styleType(typeLabel))
-	b.WriteString(utils.Mutedf(" by %s in %s", ev.User, shortenPath(ev.Cwd, 30)))
+	b.WriteString(utils.Mutedf(" by %s in %s", ev.User, events.ShortenCwd(ev.Cwd, 30)))
 	if ev.Id != 0 {
 		b.WriteString(utils.Mutedf(" id %d | ", ev.Id))
 	} else {

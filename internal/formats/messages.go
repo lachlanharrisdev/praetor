@@ -1,9 +1,11 @@
 package formats
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/lachlanharrisdev/praetor/internal/events"
@@ -18,11 +20,58 @@ const (
 	LevelError
 )
 
+func (l Level) String() string {
+	switch l {
+	case LevelInfo:
+		return "info"
+	case LevelSuccess:
+		return "success"
+	case LevelWarn:
+		return "warn"
+	case LevelError:
+		return "error"
+	default:
+		return "unknown"
+	}
+}
+
+func (l Level) MarshalJSON() ([]byte, error) {
+	return json.Marshal(l.String())
+}
+
+func (l *Level) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err == nil {
+		switch strings.ToLower(s) {
+		case "info":
+			*l = LevelInfo
+		case "success":
+			*l = LevelSuccess
+		case "warn", "warning":
+			*l = LevelWarn
+		case "error", "err":
+			*l = LevelError
+		default:
+			return fmt.Errorf("invalid level %q", s)
+		}
+		return nil
+	}
+
+	var i int
+	if err := json.Unmarshal(data, &i); err == nil {
+		*l = Level(i)
+		return nil
+	}
+
+	return fmt.Errorf("invalid level %s", string(data))
+}
+
 var (
 	rendererMu        sync.RWMutex
 	messageRenderers  = map[Format]messageRenderer{}
 	defaultEmitter    *Emitter
 	defaultEmitterMux sync.Once
+	defaultEmitterMu  sync.RWMutex
 )
 
 type Message struct {
@@ -100,19 +149,26 @@ func (e *Emitter) Event(ev *events.Event) {
 // Default returns the process-wide default emitter, creating it if needed.
 func Default() *Emitter {
 	defaultEmitterMux.Do(func() {
+		defaultEmitterMu.Lock()
+		defer defaultEmitterMu.Unlock()
 		defaultEmitter = NewEmitter(Options{
 			Format:       FormatTerminal,
 			Writer:       os.Stdout,
 			UseTimestamp: false,
 		})
 	})
+
+	defaultEmitterMu.RLock()
+	defer defaultEmitterMu.RUnlock()
 	return defaultEmitter
 }
 
 // SetDefault overrides the process-wide default emitter.
 func SetDefault(em *Emitter) {
 	defaultEmitterMux.Do(func() {})
+	defaultEmitterMu.Lock()
 	defaultEmitter = em
+	defaultEmitterMu.Unlock()
 }
 
 func Info(msg string)    { Default().Emit(Message{Level: LevelInfo, Text: msg}) }
