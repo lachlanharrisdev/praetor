@@ -12,7 +12,7 @@
     <a href="https://github.com/lachlanharrisdev/praetor/blob/main/docs"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/lachlanharrisdev/praetor/blob/main/CONTRIBUTING.md">Contribute</a>
+    <a href="https://github.com/lachlanharrisdev/praetor/blob/main/.github/CONTRIBUTING.md">Contribute</a>
     &middot;
     <a href="https://github.com/lachlanharrisdev/praetor/issues/new?template=bug_report.md">Report Bug</a>
     &middot;
