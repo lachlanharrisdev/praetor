@@ -18,9 +18,9 @@
     &middot;
     <a href="https://github.com/lachlanharrisdev/praetor/issues/new?template=feature_request.md">Request Feature</a>
     <br/><br/>
-    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/lachlanharrisdev/praetor/build.yml?style=for-the-badge">
-    <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/lachlanharrisdev/praetor/total?style=for-the-badge">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/lachlanharrisdev/praetor?sort=semver&display_name=tag&style=for-the-badge">
+    <a href="https://github.com/lachlanharrisdev/praetor/actions"> <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/lachlanharrisdev/praetor/build.yml?style=for-the-badge"></a>
+    <a href="https://github.com/lachlanharrisdev/praetor/releases"> <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/lachlanharrisdev/praetor/total?style=for-the-badge"></a>
+    <a href="https://github.com/lachlanharrisdev/praetor/releases/latest"> <img alt="GitHub Release" src="https://img.shields.io/github/v/release/lachlanharrisdev/praetor?sort=semver&display_name=tag&style=for-the-badge"></a>
 
   </p>
 </div>
@@ -45,6 +45,7 @@ Additionally, it brings plenty of utilities aimed at lowering the friction of no
 <h3>Contents</h3>
 
 * [Introduction](#introduction)
+* [Contents](#contents)
 * [Get started](#get-started)
   * [Installation](#installation)
   * [Usage](#usage)
@@ -52,6 +53,7 @@ Additionally, it brings plenty of utilities aimed at lowering the friction of no
   * [Codespaces](#codespaces)
   * [Dev Containers](#dev-containers)
   * [Local Development](#local-development)
+* [Acknowledgements](#acknowledgements)
 
 <br/>
 <h2 align="right">Get Started</h2>
@@ -134,6 +136,16 @@ Clicking the below button will open up VS Code on your local machine, clone this
 <h3>Local Development</h3>
 
 For local development, please refer to [CONTRIBUTING.md](https://github.com/lachlanharrisdev/praetor/blob/main/.github/CONTRIBUTING.md). Again, we follow most conventions so local development involves the standard flow of `fork-PR-merge`.
+
+<br/>
+<h2 align="right">Acknowledgements</h2>
+
+<br/>
+
+Without others work and research being published for free for anyone to use, this project would not be possible. While we cannot thank every single resource that has influenced this code, we'd like to thank the key resources most directly influential to the systems inside Praetor:
+
+* Jihye Kim, Hyunok Oh *[FAS: Forward secure sequential aggregate signatures for secure logging](https://www.sciencedirect.com/science/article/abs/pii/S0020025517300403)*
+* All of our [dependencies](https://github.com/lachlanharrisdev/praetor/network/dependencies) & their respective owners
 
 <br/>
 
